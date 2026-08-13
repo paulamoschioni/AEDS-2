@@ -22,9 +22,5 @@ class Busca{
     }
     System.out.println("Menor: "+ menor + "| Maior: "+ maior);
 
-
-
  sc.close(); } 
-
-
 }
