@@ -4,21 +4,17 @@ class ValidacaodeSenha{
 	boolean temNum = false, temEspecial = false, temMaius = false, temMinus= false;
 	int tam = frase.length();
 	System.out.println(frase);
-	for(int i = 0; i < tam; i++){ //é preciso pelo menos 1 MAIUSCULA, 1 MINUSCULA, 
-       	    if(frase.charAt(i) >= 0 && frase.charAt(i) <= 9) temNum = true; 	// entra se for numeros						
+	for(int i = 0; i < tam; i++){ //é preciso pelo menos 1 MAIUSCULA, 1 MINUSCULA,
+       	    if(frase.charAt(i) >= '0' && frase.charAt(i) <= '9') temNum = true; 	// entra se for numeros
 	    else if((frase.charAt(i) >= 65 && frase.charAt(i) <= 90)) temMaius = true; // entra se for letra
 	    else if((frase.charAt(i) >= 97 && frase.charAt(i) <= 122)) temMinus = true;// conta se for letra minuscula
-	    else temEspecial = true;	
+	    else temEspecial = true;
 	 }
 
 	//So retorna true se tem numero, letra, maiuscula, minuscula e especial
-	System.out.println(temNum);
-	System.out.println(temMaius);
-	System.out.println(temMinus);
-	System.out.println(temEspecial);
 	if(temNum && temEspecial && temMaius && temMinus && 8 <= tam) return true;
 	else return false;
-	}
+}
 
 	public static void main(String[] args){
 	Scanner sc = new Scanner(System.in);

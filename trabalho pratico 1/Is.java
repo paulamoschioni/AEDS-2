@@ -15,7 +15,7 @@ class Is{
 	boolean soConsoantes= true;
 	for(int j = 0; j < tam; j++){
 	if((frase.charAt(j) == 'a'|| frase.charAt(j) == 'e'||frase.charAt(j) == 'i'||frase.charAt(j)== 'o'||frase.charAt(j) == 'u'))soConsoantes = false;
-	 if(frase.charAt(j) <= 9 && frase.charAt(j) >= 0) soLetras--;
+	 if(frase.charAt(j) > 9) soLetras++;
 	}
 	if(soLetras != tam) soConsoantes = false;
 	return soConsoantes;
