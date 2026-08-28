@@ -21,7 +21,7 @@ for(int i = 0; i < (n - 1) ; i++){  // numero de passadas que é n-2, pq a prime
     }
 }
 
-for(int k = 0; k < n; k++){
+for(int k = 0; k < n; k++)KO{
 printf("%d ",array[k]);
 }
     return 0;

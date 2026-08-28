@@ -8,14 +8,13 @@ class Is{
 	}
 	return soVogais;
 	}
-
 	public static boolean Consoantes(String frase){	//composto soemnte por consoantes?
 	int tam = frase.length();
-	int soLetras =0;
+	int soLetras = 0;
 	boolean soConsoantes= true;
 	for(int j = 0; j < tam; j++){
 	if((frase.charAt(j) == 'a'|| frase.charAt(j) == 'e'||frase.charAt(j) == 'i'||frase.charAt(j)== 'o'||frase.charAt(j) == 'u'))soConsoantes = false;
-	 if(frase.charAt(j) > 9) soLetras++;
+	 if ((frase.charAt(j)>= 'a' && frase.charAt(j)<= 'z')||(frase.charAt(j) >= 'A' && frase.charAt(j) <='Z')) soLetras++;
 	}
 	if(soLetras != tam) soConsoantes = false;
 	return soConsoantes;

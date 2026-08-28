@@ -1,6 +1,6 @@
 #include <stdio.h>
 int SomaDigitos(int numero){
-	if(numero = 0){ // condicao de parada
+	if(numero == 0){ // condicao de parada
 	return 0;
 	}
 	else if(numero > 0){
@@ -11,12 +11,10 @@ int SomaDigitos(int numero){
 
 int main(){
 	int numeros; 
-	scanf("%d",&numeros);
 	int resultado;
-	while(numeros > -1){
+	while(scanf("%d",&numeros) == 1){
 	resultado = SomaDigitos(numeros);
 	printf("%d\n",resultado);
-	scanf("%d",&numeros);
 	}
 return 0;
 }

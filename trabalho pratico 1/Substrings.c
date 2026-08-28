@@ -1,33 +1,29 @@
 #include <stdio.h>
+#include <stdlib.h>
 /*Autora: Paula Moschioni
  Crie um metodo que retorna o tamanho da maior substring sem caracteres repetidos*/
 int SubstringLonga(char frase[], int tam){
-// Preenchendo o vetro que informa a maior qtde de numeros das n substrings
-	int contString = 0, acuTemp;
-	int* qcStr = malloc tam* sizeof(int);
-	/// char* substring = malloc tam* sizeof(char);
-
-	for(int i = 0 ; i < tam; i++){
-	if(i == 0) qcStr[contString] = 1;   ///indicando o primeiro char como uma substring
-	else{
-	acuTemp = 0;
-	    for(int j = (i-1); j >= 0; j--){
-	        if(frase[i] != frase[j]) acuTemp++;
-	    }
-	if(acuTemp == (i+1)) qcStr[contString]++;
-	else{
-	contString++;
-	qcStr[contString] = 1;
+	int maior = 0, inicio = 0, tamanhoAtual;
+	char caractereAtual;
+	//laco que percorre caractere por caractere
+	for(int fim = 0; fim < tam; fim++){
+		int posRepetida = -1;    //-1 seria equivalente a FALSE
+	    
+		for(int p = inicio; p < fim; p++){
+			if(frase[p] == frase[fim]) {
+			posRepetida = p;      //guarda onde achou repeticao
+			}
+		}
+	//se achou repeticao, inicio pula 1 posicao
+		if(posRepetida != -1){
+		inicio = posRepetida+1;
+		}
+		
+		int tamanhoAtual = fim - inicio + 1;
+		if(tamanhoAtual > maior) {	// o tamanho da substring atual e maior doq alguma anteriormente encontrada?
+			maior = tamanho Atual
+		}
 	}
-
-	} 
-     }
-// Comparando vetor para ver a maior sequencia
- int maior = qcStr[0];
-	for(int p = 0; p <= contString; p++) {
-	if(maior < qcStr[p]) maior = qcStr[p]; 	
-	}
-
 	return maior;
 }
 
