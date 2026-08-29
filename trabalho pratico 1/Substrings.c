@@ -21,7 +21,7 @@ int SubstringLonga(char frase[], int tam){
 		
 		int tamanhoAtual = fim - inicio + 1;
 		if(tamanhoAtual > maior) {	// o tamanho da substring atual e maior doq alguma anteriormente encontrada?
-			maior = tamanho Atual
+			maior = tamanhoAtual;
 		}
 	}
 	return maior;
@@ -38,7 +38,7 @@ int main(){
 	 tam++;
 	 }
 
-	printf("%d",SubstringLonga(frase, tam));
+	printf("%d\n",SubstringLonga(frase, tam));
 	scanf("%s",frase);
 	}
 return 0;

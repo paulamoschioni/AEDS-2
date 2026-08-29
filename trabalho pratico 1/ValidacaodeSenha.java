@@ -3,7 +3,7 @@ class ValidacaodeSenha{
 	public static boolean Valida(String frase){
 	boolean temNum = false, temEspecial = false, temMaius = false, temMinus= false;
 	int tam = frase.length();
-	System.out.println(frase);
+
 	for(int i = 0; i < tam; i++){ //é preciso pelo menos 1 MAIUSCULA, 1 MINUSCULA,
        	    if(frase.charAt(i) >= '0' && frase.charAt(i) <= '9') temNum = true; 	// entra se for numeros
 	    else if((frase.charAt(i) >= 65 && frase.charAt(i) <= 90)) temMaius = true; // entra se for letra
@@ -23,7 +23,7 @@ class ValidacaodeSenha{
 
 	while(frase.charAt(0) != 'F' || frase.charAt(1) != 'I' || frase.charAt(2) != 'M'){
 	resultado = Valida(frase);
-	System.out.println(resultado);
+
 
 	if(resultado) System.out.println("SIM");
 	else System.out.println("NAO");
