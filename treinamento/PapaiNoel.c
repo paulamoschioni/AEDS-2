@@ -1,23 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>
- void swap(char *menor, char *j){
-    char temp[20];
+ void swap(char *menor, char *i){
+    char temp[21];
     strcpy(temp, menor);
-    strcpy(menor,j);
-    strcpy(j, temp);
+    strcpy(menor,i);
+    strcpy(i, temp);
     
 }
-void ordenaNomes(char nome[][20], int num){
+void ordenaNomes(char nome[][21], int num){
     for(int i = 0; i < num - 1; i++){
         int menor = i;
-        for(int j = i + 1; j < num; j++){
+        for(int j = i + 1; j < num; ++j){
             if(strcmp(nome[j],nome[menor]) < 0 ){
                 menor = j;
             }
         }
         swap(nome[menor], nome[i]);
-
     }
 
     for(int j = 0; j < num; j++){
@@ -31,10 +30,10 @@ int main(){
     int num;
     char sinal;
     scanf("%d",&num);
-    char nomeTemp[num][20];
+    char nomeTemp[num][21];
     for(int i = 0; i < num; i++){
         scanf(" %c", &sinal);
-        scanf(" %[^\n]",nomeTemp[i]);
+        scanf(" %20s",nomeTemp[i]);
         
         if (sinal == '+'){
             qMais++;
@@ -44,6 +43,6 @@ int main(){
         }
     }
     ordenaNomes(nomeTemp, num);
-printf("\nSe comportaram: %d|Nao se comportaram: %d", qMais, qMenos);
+printf("Se comportaram: %d | Nao se comportaram: %d", qMais, qMenos);
     return 0;
 }
