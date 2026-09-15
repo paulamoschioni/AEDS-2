@@ -1,22 +1,18 @@
 import java.util.Scanner;
-class Modelagem{
-	//ordenacao por insertion
-	public static void ordenaInsertion(Veiculo carro[], int num){
-         for(int i = 1; i < num; i++){
-            Veiculo chave = carro[i];
-            int j = i - 1;
-            while(j >= 0 && (carro[j].getMarca().compareTo(chave.getMarca())) > 0){
-                carro[j + 1] = carro[j];
-                j--;
-            }
-         carro[j+1] = chave;
-        }
+class Lista{
+	public static class ListaSequencial{
+	
 
-		for(int p = 0; p < num; p++){ 
-			System.out.println(carro[p].format());
-		}
+
+
+
+
+
+
+
 
 	}
+	
 	public static int BuscaSequencial(Veiculo v[], int ident){
 	int pos = -1;
 	int tam = v.length;
@@ -40,7 +36,7 @@ class Modelagem{
 			String linha = sc.nextLine();
 			v[qtde] = Veiculo.parseVeiculo(linha);
 			qtde++;
- 			}
+			}
 
 		sc.close();
 		return v;	//devolve a ref do vetor chamado no main
@@ -186,18 +182,15 @@ class Modelagem{
 
 	//Ler ids para buscar em Veiculo[]
 	int num = sc.nextInt();
-	int i = 0, pos;
-	Veiculo[] resultado = new Veiculo[50]; //cria array de 50 pos com os carros dos ids
+	int resultado;
 
 	while(num != -1){	//le conjunto de ids para buscar
 		//busca pelo id num
-		pos = buscaSequencial(v, num);
-		resultado[i] = v[pos];
-		i++;
+		resultado = BuscaSequencial(v,num);
+		
 		num = sc.nextInt();
 	}
-	ordenaInsertion(resultado,50);
-		
+
 	sc.close();
 	}
 }
