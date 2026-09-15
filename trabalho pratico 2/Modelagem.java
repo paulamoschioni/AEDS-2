@@ -9,15 +9,26 @@ class Modelagem{
 		pos = i;
 		}
 	   }
-		return pos;
-	}
-
-	public class Veiculo[] LeitorCsv(String caminhoArquivo){
-	//guardar no vetor v cada linha ate o \n
-	//chamar parseVeiculo
-
+	return pos;
 
 	}
+
+	public class LeitorCsv{
+		public Veiculo[] ler(String caminhoArquivo)  throws FileNotFoundException{
+		Veiculo[] v = new Veiculo[501];
+		Scanner sc = new Scanner(new File(caminhoArquivo));
+		int qtde = 0;
+			while(sc.hasNextLine()){
+			String linha = sc.nextLine();
+			Veiculo carro = Veiculo.parseVeiculo(linha);
+			v[qtde] = carro;
+			qtde++;
+			}
+
+		sc.close();
+		return v;	//devolve a ref do vetor chamado no main
+	            }
+		}
 
 	public class Data{
 	//atributos
@@ -148,15 +159,11 @@ class Modelagem{
 
 
 
-
-
-
-		
-
-	public static void main(String[] args){
+	public static void main(String[] args) throws FileNotFoundException{
 	Scanner sc = new Scanner(System.in);
 	//ler CSV
-	
+	LeitorCsv leitor = new LeitorCsv();
+	Veiculo[] veiculos = leitor.ler("dados.csv"); //volta a ref de v
 
 	//Ler ids para buscar em Veiculo[]
 	int num = sc.nextInt();
@@ -166,14 +173,13 @@ class Modelagem{
 	resultado = BuscaBinaria(v,num);
 		
 	if(resultado > -1){
-	System.out.println(v[resultado].format());
-		
-		
-		
-		
-		
-		
+	System.out.println(veiculos[resultado].format());
+	}
+			
 	num = sc.nextInt();
 	}
-	sc.close();}
+
+	sc.close();
+	}
 }
+
