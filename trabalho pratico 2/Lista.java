@@ -182,16 +182,19 @@ class Lista{
 
 	//Ler ids para buscar em Veiculo[]
 	int num = sc.nextInt();
-	int resultado;
+	int i = 0;
+	int resultado[50];
 
 	while(num != -1){	//le conjunto de ids para buscar
 		//busca pelo id num
-		resultado = BuscaSequencial(v,num);
-		
+		resultado[i] = BuscaSequencial(v,num);
+		i++;
 		num = sc.nextInt();
 	}
-
+	ordenaInsertion(resultado,50);
+		
 	sc.close();
 	}
+
 }
 
