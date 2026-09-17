@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 typedef struct Data{
 	int ano;
@@ -80,7 +77,7 @@ void parseCombustivel(char *linha, char combustivel[2][50]){
 }
 
 Veiculo* parseVeiculo(char *s){
-    char *info[15];
+    char *info[15]; 
     Veiculo *v = malloc(sizeof(Veiculo));
     char *tok = strtok(s, ",");
     info[0] = tok;
@@ -89,7 +86,7 @@ Veiculo* parseVeiculo(char *s){
         tok = strtok(NULL, ",");
         info[i] = tok;
     }
-
+	
 	//atribuir aos atributos
 	v->id = atoi(info[0]);
 	strcpy(v->marca, info[1]);
@@ -129,52 +126,59 @@ void formatVeiculo(Veiculo v, char *buffer){
     free(bufferData);
 }
 
-void swap(Veiculo v, int i, int menor){
-	Veiculo temp = v[i];
-	v[i] = v[menor];
-	v[menor] = temp;
-}
-
-void OrdenaSelecao(Veiculo v[],int n){
-	for(int i = 0; i < n - 1; i++){
-	int menor = i;
-		for(int j = i + 1; j < n; j++){
-		if( strcmp(v[j].modelo, v[menor].modelo) < 0 ){
-		menor = j;
-		}
-		}
-	swap(v, i, menor);
+ void OrdenaCounting(Veiculo v[], int n){
+	
+	//porcurar maior elemento
+	int maior = v[0].cilindros;
+	for(int i = 0; i < n; i++){
+	if(v[i].cilindros > maior){
+		maior = v[i].cilindros;
+	}
 	}
 
-	char* buffer = (char*) malloc (sizeof(char) * 100);
+	//cria vetor de contagem e adiciona numeros dos cilindros no count
+	int count[maior+1];
+	for(int l = 0; l <= maior; l++){
+	count[l] = 0;
+	}
+
+	for(int j = 0; j < n; j++){
+	count[v[j].cilindros]++;
+	}
+	
+	// faz vetor acumulativo 
+	for(int a = 1; a <= maior; a++){
+	count[a] += count[a-1];
+	}	
+	
+	//distribuir nas posicoes (LEMBRA DO -1)
+	Veiculo ordenado[n];
+	for(int h = (n-1); h >= 0; h--){
+	ordenado[count[v[h].cilindros] - 1] = v[h];    //percorre o VETOR original de tras para frente e acessa, pelo valor que tem dentro, no vetor cout
+	count[v[h].cilindros]--;			//subtrai um de count
+	}	
+	
+	//copia ordenado para vetor v original
 	for(int p = 0; p < n; p++){
-	formatVeiculo(v[p],buffer);
-	printf("%s",buffer);
+	v[p] = ordenado[p];
 	}
-
-	free(buffer);
 }
-
-
-
-
 
 int main(){
 	int entrada, qnt = 500;
 	char caminhoArquivo[50];
     	strcpy(caminhoArquivo,"veiculos.csv");
 	Veiculo *dados = lerCsv(caminhoArquivo, &qnt);
-
+	
 	int pos;
-	int qtde = 0;              // <- faltava declarar
-	Veiculo carro[500];        // <- faltava declarar (mesmo tamanho do dados, por segurança)
+	int qtde = 0;              
+	Veiculo carro[500];       	
 	char *buffer = (char*)malloc(300*sizeof(char));
 	scanf("%d",&entrada);
 
-	while(entrada != -1){
-    	pos = BuscaSequencial(entrada, dados);   // <- usando as variáveis reais do main, não v/num
-
-		if (pos != -1) {                          // <- voltei a checagem de "não encontrado"
+	while(entrada != -1){     
+    	pos = BuscaSequencial(entrada, dados);   
+		if (pos != -1) {                          
 			carro[qtde] = dados[pos];
 			qtde++;
 		} else {
@@ -183,8 +187,8 @@ int main(){
 
 		scanf("%d",&entrada);
    	}
-	OrdenaCouting(carro, qtde);   // <- ordenando o carro (o que foi encontrado), não o dados inteiro
+	OrdenaCouting(carro, qtde);   
 
 	free(buffer);
 	return 0;
-}                                  // <- faltava a chave final do main
+}                                  
