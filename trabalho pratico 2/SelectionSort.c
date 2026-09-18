@@ -155,10 +155,6 @@ void OrdenaSelecao(Veiculo v[],int n){
 	free(buffer);
 }
 
-
-
-
-
 int main(){
 	int entrada, qnt = 500;
 	char caminhoArquivo[50];
@@ -166,15 +162,15 @@ int main(){
 	Veiculo *dados = lerCsv(caminhoArquivo, &qnt);
 
 	int pos;
-	int qtde = 0;              // <- faltava declarar
-	Veiculo carro[500];        // <- faltava declarar (mesmo tamanho do dados, por segurança)
+	int qtde = 0;
+	Veiculo carro[500];
 	char *buffer = (char*)malloc(300*sizeof(char));
 	scanf("%d",&entrada);
 
 	while(entrada != -1){
-    	pos = BuscaSequencial(entrada, dados);   // <- usando as variáveis reais do main, não v/num
+    	pos = BuscaSequencial(entrada, dados);
 
-		if (pos != -1) {                          // <- voltei a checagem de "não encontrado"
+		if (pos != -1) {
 			carro[qtde] = dados[pos];
 			qtde++;
 		} else {
@@ -183,8 +179,8 @@ int main(){
 
 		scanf("%d",&entrada);
    	}
-	OrdenaCouting(carro, qtde);   // <- ordenando o carro (o que foi encontrado), não o dados inteiro
+	OrdenaSelecao(carro, qtde);
 
 	free(buffer);
 	return 0;
-}                                  // <- faltava a chave final do main
+}
