@@ -128,7 +128,7 @@ void formatVeiculo(Veiculo v, char *buffer){
 
 c
 void ordenaCounting(Veiculo v[], int tam, int casa){
-	int count[10] = {0};   //vetor de contagens com QUANTOS anos tiveram digitos de 0 a 9
+	int count[10] = {};   //vetor de contagens com QUANTOS anos tiveram digitos de 0 a 9
 	int dentro = 0;
 
 	for(int i = 0; i < tam; i++){
