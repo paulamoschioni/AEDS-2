@@ -126,6 +126,46 @@ void formatVeiculo(Veiculo v, char *buffer){
     free(bufferData);
 }
 
+void ordenaPorModelo(Veiculo carro[], int qtde){
+    for(int i = 0; i < qtde - 1; i++){
+        int menor = i;
+        for(int j = i + 1; j < qtde; j++){
+           
+   		if(strcmp(carro[j].modelo, carro[menor].modelo) < 0){
+                menor = j;
+            }
+        }
+        if(menor != i){
+            Veiculo temp = carro[i];
+            carro[i] = carro[menor];
+            carro[menor] = temp;
+        }
+    }
+}
+
+int buscaBinaria(char *s, Veiculo carro[], int n){
+	int pos = -1;              
+	int inicio = 0;
+	int fim = n - 1;
+
+	while(inicio <= fim){
+		int meio = (inicio + fim)/2;   
+
+		if(strcmp(carro[meio].modelo, s) == 0){
+			pos = meio;
+			break;                        
+		}
+		else if(strcmp(carro[meio].modelo, s) > 0){
+			fim = meio - 1;                
+		}
+		else{
+			inicio = meio + 1;             
+		}
+	}
+
+	return pos;
+}
+
 int main(){
 	int entrada, qnt = 500;
 	char caminhoArquivo[50];
@@ -133,20 +173,36 @@ int main(){
 	Veiculo *dados = lerCsv(caminhoArquivo, &qnt);
 	
 	int pos;
+	int qtde = 0;
+	Veiculo carro[500];
 	char *buffer = (char*)malloc(300*sizeof(char));
 	scanf("%d",&entrada);
 
-	while(entrada != -1){
-            pos = BuscaSequencial(entrada, dados);
-            if(pos == -1){
-                printf("Veiculo nao encontrado\n");
-            } else {
-                formatVeiculo(dados[pos], buffer);
-                printf("%s", buffer);
-            }
-            scanf("%d",&entrada);
-   	}
+	ordenaPorModelo(carro, qtde);
 
-free(buffer);
-return 0;
+	while(entrada != -1){
+    	pos = BuscaSequencial(entrada, dados);
+		if (pos != -1) {
+			carro[qtde] = dados[pos];
+			qtde++;
+		} 
+		scanf("%d",&entrada);
+   	}
+	
+	//lendo modelos ate ter FIM
+	char s[200];
+	scanf(" %[^\n]",s);
+	int resultado;
+
+	while(s[0] != 'F' || s[1] != 'I' || s[2] != 'M'){
+		resultado = buscaBinaria(s, carro, qtde);
+		if(resultado >= 0 && resultado < qtde){
+			print("SIM\n");
+		} else {
+		printf("NAO\n");
+		}
+	scanf(" %[^\n]",s);
+	}
+	free(buffer);
+	return 0;
 }
