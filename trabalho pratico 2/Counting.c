@@ -189,6 +189,11 @@ int main(){
    	}
 	OrdenaCouting(carro, qtde);
 
+    for(int k = 0; k < qtde; k++){
+		formatVeiculo(carro[k], buffer);
+		printf("%s\n",buffer);
+	}
+
 	free(buffer);
 	return 0;
 }
