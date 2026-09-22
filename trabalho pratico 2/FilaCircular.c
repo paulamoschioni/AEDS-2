@@ -1,0 +1,224 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Data{
+	int ano;
+	int mes;
+	int dia;
+} Data;
+
+typedef struct Veiculo{
+	int id;
+	char marca[100];
+	char modelo[100];
+	int ano;
+	char categoria[100];
+	char combustivel[2][50];
+	int cilindros;
+	double cilindrada;
+	char transmissao[100];
+	char tracao[60];
+	double consumoCidade;
+	double consumoEstrada;
+	double co2;
+	int turbo;
+	Data dataRegistro;
+
+} Veiculo;
+
+Data parseData(char *s){
+	Data d;
+	sscanf(s,"%d-%d-%d", &d.ano, &d.mes, &d.dia);
+	return d;
+}
+
+void formatData(Data d, char *buffer){
+	sprintf(buffer, "%02d/%02d/%d", d.dia, d.mes, d.ano);
+}
+
+int BuscaSequencial(int entrada, Veiculo *dados){
+    int pos = -1;
+    for(int i=0; i<500; i++)
+		if(entrada == dados[i].id)
+        {
+            pos = i;
+            i=500;
+        }
+
+    return pos;
+}
+
+Veiculo* lerCsv(char *caminhoArquivo, int *n){
+	FILE *arq = fopen(caminhoArquivo, "r");
+
+	Veiculo *dados = malloc((*n) * sizeof(Veiculo));
+	char linha[300];
+	int cont = 0;
+
+	while (fgets(linha, sizeof(linha), arq) != NULL && cont < *n) {
+    	Veiculo *v = parseVeiculo(linha);
+	dados[cont] = *v;
+	free(v);
+	cont++;
+	}
+
+	fclose(arq);
+	*n = cont;
+	return dados;
+}
+
+void parseCombustivel(char *linha, char combustivel[2][50]){
+    char *tok = strtok(linha, ";");
+    strcpy(combustivel[0],tok);
+    tok = strtok(NULL, ";");
+    if(tok!=NULL)strcpy(combustivel[1], tok);
+    else strcpy(combustivel[1],"");
+}
+
+Veiculo* parseVeiculo(char *s){
+    char *info[15];
+    Veiculo *v = malloc(sizeof(Veiculo));
+    char *tok = strtok(s, ",");
+    info[0] = tok;
+
+    for(int i=1; i<15; i++){	//for com 15 pos, ja que sao 15 atributos
+        tok = strtok(NULL, ",");
+        info[i] = tok;
+    }
+
+	//atribuir aos atributos
+	v->id = atoi(info[0]);
+	strcpy(v->marca, info[1]);
+	strcpy(v->modelo, info[2]);
+	v->ano = atoi(info[3]);
+	strcpy(v->categoria, info[4]);
+	parseCombustivel(info[5], v->combustivel);
+	v->cilindros = atoi(info[6]);
+	v->cilindrada = atof(info[7]);
+	strcpy(v->transmissao, info[8]);
+	strcpy(v->tracao, info[9]);
+    	v->consumoCidade = atof(info[10]);
+    	v->consumoEstrada = atof(info[11]);
+    	v->co2 = atof(info[12]);
+    	if(strcmp(info[13], "true")==0) v->turbo =1;
+    	else if(strcmp(info[13],"false")==0) v->turbo=0;
+    	v->dataRegistro = parseData(info[14]);
+
+	return v;
+}
+
+void formatVeiculo(Veiculo v, char *buffer){
+    char turbo[10];
+    char *bufferData = (char*)malloc(20*sizeof(char));
+    char bufferCombustivel[110];
+
+    strcpy(bufferCombustivel,v.combustivel[0]);
+    if(v.combustivel[1][0]!='\0'){
+        strcat(bufferCombustivel,",");
+        strcat(bufferCombustivel,v.combustivel[1]);
+    }
+
+    if(v.turbo==1)strcpy(turbo,"true");
+    else if(v.turbo==0) strcpy(turbo,"false");
+    formatData(v.dataRegistro, bufferData);
+    sprintf(buffer, "[%d ## %s ## %s ## %d ## %s ## [%s] ## %d ## %.1lf ## %s ## %s ## %.2lf ## %.2lf ## %.1lf ## %s ## %s]\n",v.id,v.marca,v.modelo,v.ano,v.categoria,bufferCombustivel,v.cilindros,v.cilindrada,v.transmissao,v.tracao,v.consumoCidade,v.consumoEstrada,v.co2,turbo, bufferData);
+    free(bufferData);
+}
+
+typedef struct FilaCircular{
+	int ultimo;
+	int primeiro;
+	Veiculo *array;
+}Fila;
+
+void FilaCircular(Fila *fila,int tam){
+	Veiculo* fila->array = malloc (tam * sizeof(Veiculo));
+	fila->primeiro = 0;
+	fila->ultimo = 0;
+}
+
+void I(Fila *fila, int tam, Veiculo veiculo){
+	if(fila->ultimo + 1){
+		
+	}
+	//fila esta cheia?
+	if(((fila->ultimo + 1) % tam) == (fila->primeiro)){
+		Veiculo removido = R();
+		printf("(R)%s %s\n",removido.marca , removido.modelo);
+	}
+
+	//adicionar na ultima posicao e atualizar
+	fila->array[fila->ultimo] = veiculo;
+	fila->ultimo = ((fila->ultimo + 1 + tam) % (tam));
+}
+
+Veiculo R(Fila *fila, int tam){
+	//fila vazia
+	if(fila->primeiro == fila->ultimo){
+	printf("erro");
+	}
+
+	//guardando removido
+	Veiculo temp = fila->array[fila->primeiro];
+
+	//retirando primeiro
+	fila->primeiro = (fila->primeiro + 1) % (tam);
+
+	return temp;
+}
+
+void mostrar(Fila *fila){
+	int atual = fila->primeiro;
+	while(atual != fila->ultimo){
+		char *buffer = (char*)malloc(200*sizeof(char));
+		formatVeiculo(fila->array[atual], buffer);
+		free(buffer);
+		atual = (atual+1)%6;
+	}
+}
+
+int main(){
+	int qnt = 500;
+	char caminhoArquivo[50];
+	strcpy(caminhoArquivo, "veiculos.csv");  
+	Veiculo *dados = lerCsv(caminhoArquivo, qnt); 
+
+	int tam = 6; 
+	Fila fila;
+	FilaCircular(&fila, tam);
+
+	
+	int entrada;
+	scanf("%d", &entrada);
+	while(entrada != -1){
+		int pos = BuscaSequencial(entrada, dados);
+		if(pos != -1) I(&fila, tam, dados[pos]);
+		scanf("%d", &entrada);
+	}
+
+	
+	int N;
+	scanf("%d", &N);
+	char linha[20];
+	for(int i = 0; i < N; i++){
+		scanf(" %[^\n]", linha);
+		char *tok = strtok(linha, " ");
+
+		if(strcmp(tok, "R") == 0){
+			Veiculo removido = R(&fila, tam);
+			printf("(R)%s %s\n", removido.marca, removido.modelo);
+		}
+		else if(strcmp(tok, "I") == 0){
+			tok = strtok(NULL, " ");
+			entrada = atoi(tok);
+			int pos = BuscaSequencial(entrada, dados);
+			if(pos != -1) I(&fila, tam, dados[pos]);
+		}
+	}
+
+	mostrar(&fila, tam);
+
+	free(dados);
+	return 0;
+}
