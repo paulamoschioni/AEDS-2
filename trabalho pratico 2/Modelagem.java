@@ -3,7 +3,7 @@ import java.io.File;
 
 
 class Modelagem{
-	public static int BuscaSequencial(Veiculo v[], int ident){
+	public static int BuscaSequencial(Veiculo v[], int ident){ //busca por id no array de veiculos
 	int pos = -1;
 	int tam = v.length;
 	
@@ -135,6 +135,10 @@ class Modelagem{
 	}
 	public Data getDataregistro(){
 	return dataRegistro;
+	}
+
+	public String getModelo(){
+	return modelo;
 	}
 
 	public static Veiculo parseVeiculo(String s){	//cria um novo veiculo com 15 atributos e retorna ele				

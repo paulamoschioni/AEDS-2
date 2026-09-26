@@ -1,27 +1,11 @@
 import java.util.Scanner;
-class Modelagem{
-	//ordenacao por insertion
-	public static void ordenaInsertion(Veiculo carro[], int num){
-         for(int i = 1; i < num; i++){
-            Veiculo chave = carro[i];
-            int j = i - 1;
-            while(j >= 0 && (carro[j].getMarca().compareTo(chave.getMarca())) > 0){
-                carro[j + 1] = carro[j];
-                j--;
-            }
-         carro[j+1] = chave;
-        }
-
-		for(int p = 0; p < num; p++){ 
-			System.out.println(carro[p].format());
-		}
-
-	}
-	public static int BuscaSequencial(Veiculo v[], int ident){
+import java.io.File;                   
+class Insertion{
+	public static int BuscaSequencial(Veiculo v[], int ident){ //busca por id no array de veiculos
 	int pos = -1;
 	int tam = v.length;
 	
-	for(int i = 0; i < tam; i++){
+	for(int i = 0; i < tam && v[i] != null; i++){   
 		if(v[i].getId() == ident) {
 		pos = i;
 		}
@@ -30,17 +14,18 @@ class Modelagem{
 
 	}
 
-	public static class LeitorCsv{
-		public Veiculo[] ler(String caminhoArquivo)  throws FileNotFoundException{
+	public static class LeitorCsv{		//le arquivo csv
+		public Veiculo[] ler(String caminhoArquivo)  throws Exception{
 		Veiculo[] v = new Veiculo[500];
 		Scanner sc = new Scanner(new File(caminhoArquivo));
-		
+	
+		sc.nextLine(); //pular linha do cabecalho
 		int qtde = 0;
 			while(sc.hasNextLine()){
 			String linha = sc.nextLine();
 			v[qtde] = Veiculo.parseVeiculo(linha);
 			qtde++;
- 			}
+			}
 
 		sc.close();
 		return v;	//devolve a ref do vetor chamado no main
@@ -52,6 +37,7 @@ class Modelagem{
 	private int dia;
 	private int mes;
 	private int ano;
+
 	//metodos
 	public static Data parseData(String s){	   //recebe no formato AAAA-MM-DD
 	String[] d = s.split("-");
@@ -62,7 +48,7 @@ class Modelagem{
 	return nova;
 	}
 	
-	public String format(){
+	public String format(){   //formata data
 	return String.format("%02d/%02d/%04d",dia,mes,ano);
 	}
        }
@@ -87,6 +73,7 @@ class Modelagem{
 
 	//metodos
 	public Veiculo(int i, String ma, String mo, int a, String cat, String[] comb, int co, double ca, String t, String tr, double cC, double cE, double c2, boolean tur, Data dt){
+	//construtor que inicializa atributos
 	id = i;
 	marca = ma;
 	modelo = mo;
@@ -104,6 +91,7 @@ class Modelagem{
 	dataRegistro = dt;
 	}
 
+	//metodos get para todas as variaveis, retornando o respectivo atributo
 	public int getId(){
 	return id;
 	}
@@ -146,6 +134,9 @@ class Modelagem{
 	public Data getDataregistro(){
 	return dataRegistro;
 	}
+	public String getModelo(){
+	return modelo;
+	}
 
 	public static Veiculo parseVeiculo(String s){	//cria um novo veiculo com 15 atributos e retorna ele				
 	String[] x = s.split(",");		//cria vetor de 15 strings p guardar os 15 atributos. Split retorna automaticamente string[]
@@ -170,35 +161,71 @@ class Modelagem{
 	return new Veiculo(id, marca, modelo, ano, categoria, combustivel, cilindros, cilindrada, transmissao, tracao, consumoCidade, consumoEstrada, co2,turbo,dataRegistro);  //criando um novo objeto da classe Veiculo, chamando seu construtor
 	}
 
-	public String format(){
-	return String.format("[%d ## %s ## %s ## %d ## %s ## [%s] ## %d ## %.1f ## %s ## %s ## %.2f ## %.2f ## %.1f ## %s ## %s]",id, marca, modelo, ano, categoria, String.join(";",combustivel), cilindros, cilindrada, transmissao, tracao, consumoCidade, consumoEstrada, co2,turbo,dataRegistro.format());
-	}
+			
+	public String format() {	// monta a string de saida do veiculo no formato pedido pelo enunciado
+			String comb = ""; // junta combustiveis do vetor em uma unica string separados por v,
+			for (int i = 0; i < combustivel.length; i++) {
+				if (i > 0)
+					comb += ",";
+				comb += combustivel[i];
+			}
+	return "[" + getId() + " ## " + getMarca() + " ## " + getModelo() + " ## " + getAno() + " ## "
+	+ getCategoria() + " ## [" + comb + "] ## " + getCilindros() + " ## " + getCilindrada()
+	+ " ## " + getTransmissao() + " ## " + getTracao() + " ## "
+	+ String.format("%.2f", getConsumoCidade()) + " ## "
+	+ String.format("%.2f", getConsumoEstrada()) + " ## " + getCo2() + " ## " + getTurbo()
+	+ " ## " + getDataregistro().format() + "]";
+		}
 	  }
 
+	
+	public static void insercao(Veiculo[] array, int n){
+		for(int i = 1; i < n; i++){
+			Veiculo tmp = array[i];		//elemento que vai ser encaixado na parte ja ordenada
+			int j = i - 1;
+
+			//enquanto o da esquerda tiver marca MAIOR que a do tmp, empurra ele uma casa pra direita
+			while(j >= 0 && array[j].getMarca().compareTo(tmp.getMarca()) > 0){
+				array[j + 1] = array[j];
+				j--;
+			}
+			array[j + 1] = tmp;		//encaixa o tmp no buraco que sobrou
+		}
+	}
 
 
 
-	public static void main(String[] args) throws FileNotFoundException{
+	public static void main(String[] args) throws Exception{
 	Scanner sc = new Scanner(System.in);
 	//ler CSV
 	LeitorCsv leitor = new LeitorCsv();
-	Veiculo[] v = leitor.ler("dados.csv"); //volta a ref de v
+	Veiculo[] v = leitor.ler("/tmp/veiculos.csv"); //volta a ref de v
 
-	//Ler ids para buscar em Veiculo[]
+	//vetor separado so com os veiculos pedidos na entrada
+	Veiculo[] selecionados = new Veiculo[500];
+	int n = 0;		//quantos foram guardados
+
 	int num = sc.nextInt();
-	int i = 0, pos;
-	Veiculo[] resultado = new Veiculo[50]; //cria array de 50 pos com os carros dos ids
+	int resultado;
 
 	while(num != -1){	//le conjunto de ids para buscar
-		//busca pelo id num
-		pos = buscaSequencial(v, num);
-		resultado[i] = v[pos];
-		i++;
+		resultado = BuscaSequencial(v,num);
+
+		if(resultado > -1){
+		selecionados[n] = v[resultado];	//guarda a ref do veiculo encontrado
+		n++;
+		}
 		num = sc.nextInt();
 	}
-	ordenaInsertion(resultado,50);
-		
+
+	//ordena so as n posicoes preenchidas
+	insercao(selecionados, n);
+
+	//mostra ordenado
+	for(int i = 0; i < n; i++){
+		System.out.println(selecionados[i].format());
+	}
+
 	sc.close();
 	}
 }
-
