@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 import java.io.File;
 
@@ -21,9 +22,21 @@ class heapSort{
 		v[b] = temp;
 	}
 
+	// retorna > 0 se a vem DEPOIS de b, < 0 se vem ANTES, 0 se iguais
+	public static int compara(Veiculo a, Veiculo b){
+		if(a.co2 != b.co2){								//1o criterio: co2
+			return Double.compare(a.co2, b.co2);
+		}
+		int t = a.getTransmissao().compareTo(b.getTransmissao());	//desempate: transmissao
+		if(t != 0){
+			return t;
+		}
+		return Integer.compare(a.getId(), b.getId());	//3o criterio: id
+	}
+
 	public static void construir(int tamHeap, Veiculo array[]){
 		int i = tamHeap;
-		while(i > 1 && array[i].co2 > array[i/2].co2){  //NAO é a raiz E é maior que o pai
+		while(i > 1 && compara(array[i], array[i/2]) > 0){  //NAO é a raiz E é maior que o pai
 			swap(i, (i/2), array);
 			i = i/2; //proximo pai
 		}
@@ -35,10 +48,7 @@ class heapSort{
 		if(2*i + 1 > tamHeap){		//filho da direita NAO existe no heap -> so sobra o da esquerda
 			posicaoFilhoMaior = 2*i;
 		} else {
-			double filho1 = array[2*i].co2;
-			double filho2 = array[2*i + 1].co2;
-
-			if(filho1 > filho2){
+			if(compara(array[2*i], array[2*i + 1]) > 0){
 				posicaoFilhoMaior = 2*i;
 			} else {
 				posicaoFilhoMaior = 2*i + 1;
@@ -52,7 +62,7 @@ class heapSort{
 		int i = 1;   //comeca da raiz, onde esta o possivel "intruso"
 		while(i <= tamHeap / 2){	//enquanto i tiver pelo menos 1 filho
 			int filho = getMaiorFilho(i, tamHeap, array);   //pega o maior filho 
-			if(array[i].co2 < array[filho].co2){	//arvore esta invertida?
+			if(compara(array[filho], array[i]) > 0){	//arvore esta invertida?
 				swap(i, filho,array);				//se sim, pai desce e filho sobe
 				i = filho;
 			} else {
@@ -75,21 +85,6 @@ class heapSort{
 		}
 
 	}
-
-	public static void desempate(int n, Veiculo v[]){
-	boolean trocou = true;		//comeca true so pra entrar no while
-	while(trocou){			//repete enquanto a ultima passada fez alguma troca
-		trocou = false;		
-		for(int i = 2; i <= n; i++){
-			if(v[i - 1].co2 == v[i].co2){
-				if(v[i - 1].transmissao.compareTo(v[i].transmissao) > 0){
-					swap((i-1), i, v);
-					trocou = true;	//teve troca, precisa passar de novo
-				}
-			}
-		}
-	}
-}
 
 	public static class LeitorCsv{		//le arquivo csv
 		public Veiculo[] ler(String caminhoArquivo)  throws Exception{
@@ -285,7 +280,6 @@ class heapSort{
 	}
 
 	heapSort(i, resultado);	//ordena as posicoes 1 ate i por co2
-	desempate(i, resultado);
 	for(int k = 1; k <= i; k++){	//imprime a partir da posicao 1
 		System.out.println(resultado[k].format());
 	}
