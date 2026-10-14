@@ -61,6 +61,7 @@ void meiose(Lista *lista){
 
         if(atual == lista->ultimo){
             lista->ultimo = nova;
+            
         }
         atual = atual->prox->prox;  //pula 2
     }
