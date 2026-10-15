@@ -15,6 +15,7 @@ class PilhaComFila {
         if (n == 0) {
             throw new Exception("Erro: pilha vazia!");
         }
+        
         for (int i = 0; i < n - 1; i++) {   // gira n − 1 vezes...
             fila.inserir(fila.remover());   // ...tira da frente e põe no fim (um giro)
         }
