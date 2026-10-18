@@ -152,13 +152,22 @@ class Arvore{
             return 0;
         }
 
+        //olha so o no atual
+        int atual = 0;
+        if(i.elemento % 2 == 0){
+            atual = 1;
+        }
+
+        //a arvore da esquerda tem quantos pares?
         int paresEsq = contarPares(i.esq);
+        
+        //a arvore da direita tem quantos pares?
         int paresDir = contarPares(i.dir);
 
-        return paresDir + paresEsq;
+        return atual + paresDir + paresEsq;
     }
 
-    ''
+
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         
