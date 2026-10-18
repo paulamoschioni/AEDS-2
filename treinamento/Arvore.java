@@ -2,7 +2,7 @@ import java.util.Scanner;
 /* Paula Moschioni 
 15/10/2026
 Código teste sobre árvores. Contém: inserir árvore, mostrar árvore, 
-contar quantos nós tem na árvore e somar os elementos da árvore*/
+contar quantos nós tem na árvore e somar os elementos da árvore, pesquisar na árvore BST, contar pares*/
 
 class No{
     No esq, dir;  //filhos
@@ -88,7 +88,77 @@ class Arvore{
         }
     }
 
+    /* ---- PESQUISA ---- */
+    public boolean pesquisar(int x){
+        return pesquisar(raiz, x);
+    }
 
+    private boolean pesquisar(No i, int x){
+        //caso base
+        if(i == null){  //percorreu todos os nos e nao achou
+            return false;
+        }
+        else if(i.elemento == x){
+            return true;
+        }
+        else if(x > i.elemento){    //x é maior, entao vai estar a DIREITA
+            return pesquisar(i.dir, x);
+        }
+        else{   //c é menor, entao vai estar a ESQUERDA
+            return pesquisar(i.esq, x);
+        }
+    }
+
+    /* ----- CONTAR NOS ----- */
+    public int contarNos(){
+        return contarNos(raiz);       // porteiro: começa pela raiz e devolve a resposta
+    }
+
+    private int contarNos(No i){
+        //caso base 
+        if(i == null){      //chegou no final, dps da folha
+            return 0;
+        }
+        int somaEsq = contarNos(i.esq);     //confia que soma tudo da esquerda
+        int somaDir = contarNos(i.dir);     // --    --   --   --  --  direita
+
+        return 1 + somaDir + somaEsq;
+    }
+
+    /* ---- SOMAR NOS ---- */
+    public int somarNos(){
+        return somarNos(raiz);
+    } 
+    
+    private int somarNos(No i){
+        //caso base: acabou o lado
+        if(i == null){
+            return 0;
+        }
+
+        int somaEsq = somarNos(i.esq);      //confia que vai somar tudo da esquerda
+        int somaDir = somarNos(i.dir);      //confia que vai somar tudo da direita
+
+        return i.elemento + somaEsq + somaDir;
+    }
+
+    /* ---- CONTAR PARES ---- */
+    public int contarPares(){
+        return contarPares(raiz);
+    }
+
+    public int contarPares(No i){
+        if(i == null){
+            return 0;
+        }
+
+        int paresEsq = contarPares(i.esq);
+        int paresDir = contarPares(i.dir);
+
+        return paresDir + paresEsq;
+    }
+
+    ''
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         
@@ -116,7 +186,19 @@ class Arvore{
         System.out.println("Arvore impressa em POS-ORDEM : ");
         arvore.mostrarEmPos();
         System.out.println();
-        
+
+        System.out.println("Digite o elemento de pesquisa: ");
+        int chave = sc.nextInt();
+        boolean existe = arvore.pesquisar(chave);
+        if(existe) System.out.println("O elemento existe na arvore");
+        else System.out.println("O elemento nao existe na arvore ");
+
+        int cont = arvore.contarNos();
+        System.out.println("A arvore tem " + cont + "nos");
+
+        int soma = arvore.somarNos();
+        System.out.println("A soma dos elementos é: " + soma);
+
         sc.close();
     }
 }
