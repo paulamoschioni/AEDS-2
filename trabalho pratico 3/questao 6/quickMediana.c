@@ -165,29 +165,36 @@ void swap(Veiculo v[], int i, int menor){		//troca os elementos
 	v[menor] = temp;
 }
 
-double medianaDeTres(Veiculo v[], int esq, int dir){
+int compara(Veiculo *a, Veiculo *b){	// <0 se a vem antes, >0 se vem depois
+	if(a->consumoEstrada < b->consumoEstrada) return -1;	//1o criterio: consumoEstrada
+	if(a->consumoEstrada > b->consumoEstrada) return 1;
+	return strcmp(a->marca, b->marca);	//empate = marca
+}
+
+Veiculo medianaDeTres(Veiculo v[], int esq, int dir){
 	int meio = (dir + esq)/2;
 	int pivo;
 
-	double a = v[esq].consumoEstrada;
-	double b = v[meio].consumoEstrada;
-	double c = v[dir].consumoEstrada;
+	Veiculo *a = &v[esq];
+	Veiculo *b = &v[meio];
+	Veiculo *c = &v[dir];
 
-	if((a <= b && b <= c) || (c <= b && b <= a)) pivo = meio;
-	else if((b <= a && a <= c) || (c <= a && a <= b)) pivo = esq;
+	if((compara(a, b) <= 0 && compara(b, c) <= 0) || (compara(c, b) <= 0 && compara(b, a) <= 0)) pivo = meio;
+	else if((compara(b, a) <= 0 && compara(a, c) <= 0) || (compara(c, a) <= 0 && compara(a, b) <= 0)) pivo = esq;
 	//se não é nenhum dos dois, só sobra o dir
 	else pivo = dir;
-	return v[pivo].consumoEstrada;
+	swap(v, pivo, meio);	
+	return v[meio];
 }
 
 void quickSort(Veiculo carro[], int esq, int dir){
 	int j = dir, i = esq;
-	double pivo = medianaDeTres(carro, esq, dir);	//enquanto os ponteiros nao se encontrarem (j eh sempre maior)
+	Veiculo pivo = medianaDeTres(carro, esq, dir);	//enquanto os ponteiros nao se encontrarem (j eh sempre maior)
 	while(j >= i){		//aqui so checa a condicao inicial
-		while(pivo > carro[i].consumoEstrada){
+		while(compara(&carro[i], &pivo) < 0){
 		  i++;  //avancar
 		}
-		while(pivo < carro[j].consumoEstrada){
+		while(compara(&carro[j], &pivo) > 0){
 		  j--;  //regredir
 		}
 		if(j >= i){ 	//ja se cruzaram dps de andar??
@@ -202,15 +209,6 @@ void quickSort(Veiculo carro[], int esq, int dir){
 	}
 	if(dir > i){ //manda a metade direita
 		quickSort(carro, i, dir);
-	}
-}
-
-void desempate(Veiculo v[], int i, int anterior){	//retorna 1 se trocou
-	int cmp = strcmp(v[anterior].marca, v[i].marca);
-	if(cmp == 0) cmp = strcmp(v[anterior].modelo, v[i].modelo);	//marca igual -> modelo
-
-	if(cmp > 0){		//o da frente eh maior -> troca
-		swap(v, i, anterior);
 	}
 }
 
@@ -240,13 +238,6 @@ int main(){
 	quickSort(selecionados, 0, k - 1);	//ordena so os k veiculos guardados
 
 	char *buffer = (char*)malloc(300*sizeof(char));
-
-	for(int g = 1; g < k; g++){
-	if(selecionados[g].consumoEstrada == selecionados[g - 1].consumoEstrada){
-		desempate(selecionados, g, g-1);
-	}
-
-	}
 
 	for(int i = 0; i < k; i++){
 	formatVeiculo(selecionados[i], buffer);

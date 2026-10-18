@@ -216,30 +216,25 @@ void liberarLista(Lista *l){  //libera todas as celulas
 
 
 void selecao(Lista *lista, int n){  //ordena por selecao
-	Celula *celulaI= lista->primeiro.prox;
+	Celula *celulaI = lista->primeiro->prox;
 	int iteracaoI = 0;
 
-	while(celulaI->prox!= NULL && iteracaoI < (n - 1)){  //vai ate a penultima celula
-		int menor = iteracaoI;  //posicao do menor modelo encontrado ate agora
-		Celula *atual = celulaI;
+	while(celulaI != NULL && iteracaoI < (n - 1)){  //vai ate a penultima celula
+		Celula *menor = celulaI;  //posicao do menor modelo encontrado ate agora
 
 			Celula *celulaJ = celulaI->prox;	//celula j
-			int iteracaoJ = iteracaoI + 1;		
 			while(celulaJ != NULL){ //vai ate a ultima celula
-				int cmp = caseSense(atual->elemento.modelo, celulaJ->elemento.modelo);
+				int cmp = caseSense(celulaJ->elemento.modelo, menor->elemento.modelo);
 
-				if(cmp < 0 || (cmp == 0 && celulaJ->elemento.id < atual->elemento.id)){
-					menor = iteracaoJ;
-					atual = celulaJ;
+				if(cmp < 0 || (cmp == 0 && celulaJ->elemento.id < menor->elemento.id)){
+					menor = celulaJ;
 				}
-				iteracaoJ++;	
 				celulaJ = celulaJ->prox;
 			}
 
-		Veiculo temp = atual->elemento;		
-		atual->elemento = celula->elemento;
+		Veiculo temp = menor->elemento;
+		menor->elemento = celulaI->elemento;
 		celulaI->elemento = temp;
-		
 
 		celulaI = celulaI->prox;
 		iteracaoI++;
@@ -256,19 +251,13 @@ int main(){
 	Lista lista;
 	iniciarLista(&lista);
 
-	Veiculo *selecionados = malloc(qnt * sizeof(Veiculo));	//vetor separado so com os veiculos pesquisados
-	int k = 0;		//quantidade de veiculos guardados em selecionados
-
 	//ids ate -1
-	int entrada, qtde = 0;
-
 	while(scanf("%d", &entrada) == 1 && entrada != -1){
 		int pos = BuscaSequencial(entrada, dados, qnt);
 		if(pos != -1) inserirFim(&lista, dados[pos]);
-		qtde++;
 	}
 
-	selecao(&lista, qtde);	//ordena so os k veiculos guardados
+	selecao(&lista, lista.n);	//ordena so os k veiculos guardados
 	
 	mostrar(&lista);
 

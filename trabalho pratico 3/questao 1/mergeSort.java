@@ -213,7 +213,7 @@ class mergeSort{
 		for(int i = esq; i <= dir; i++){	//i caminha pelo tamanho do vetor original da chamada atual
 			if(vetEsq[iEsq].consumoCidade < vetDir[iDir].consumoCidade ||
  			 (vetEsq[iEsq].consumoCidade == vetDir[iDir].consumoCidade &&
-  			 vetEsq[iEsq].categoria.compareTo(vetDir[iDir].categoria) < 0)){
+  			 vetEsq[iEsq].categoria.compareTo(vetDir[iDir].categoria) <= 0)){
 				vet[i] = vetEsq[iEsq];
 				iEsq++;
 			}  else  {

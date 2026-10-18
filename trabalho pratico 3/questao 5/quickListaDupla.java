@@ -177,7 +177,7 @@ class quickListaDupla{
 		}
 	  }
 
-	public class Celula{
+	public static class Celula{
 	Celula prox;
 	Celula ant;
 	Veiculo veiculo;
@@ -197,13 +197,13 @@ class quickListaDupla{
 	} 
 
 
-	public class ListaDupla{
+	public static class ListaDupla{
 	Celula primeira;
 	Celula ultima;
 
 	public ListaDupla(){
-        	primeira = null;
-		ultima = null;
+        	primeira = new Celula();	//celula cabeca (sem veiculo)
+		ultima = primeira;
    	}
 
    	public void IF(Veiculo v){
@@ -221,7 +221,7 @@ class quickListaDupla{
 	public void mostraLista(){
 		Celula atual = primeira.prox;
 		while(atual != null){
-		atual.veiculo.format();
+		System.out.println(atual.veiculo.format());
 		
 		atual = atual.prox;
 		}
@@ -233,23 +233,29 @@ class quickListaDupla{
 		b.veiculo = temp;
 	}
 
+	static int compara(Veiculo a, Veiculo b){
+		if(a.consumoEstrada < b.consumoEstrada) return -1;	//1o criterio: consumoEstrada
+		if(a.consumoEstrada > b.consumoEstrada) return 1;
+		return a.marca.compareTo(b.marca);	//empate -> marca
+	}
+
 	static void quickSort(Celula esq, Celula dir, int Nesq, int Ndir){
 		Celula cI = esq, cJ = dir;
 		int i = Nesq, j = Ndir;
 		
 		//achar nó do pivo do meio
 		Celula meio = esq;
-		for(int k = 0; k < ((Nesq+Ndir)/2); k++){
+		for(int k = Nesq; k < ((Nesq+Ndir)/2); k++){
 			meio = meio.prox;
 		}
-		double pivo = meio.veiculo.consumoEstrada;  
+		Veiculo pivo = meio.veiculo;  
 
 		while(i <= j){	//enquanto ponteiros nao se cruzaram ainda
-			while(cI.veiculo.consumoEstrada < pivo){	//avanca i para frente
+			while(compara(cI.veiculo, pivo) < 0){	//avanca i para frente
 				i++;
 				cI = cI.prox;
 			}
-			while(cJ.veiculo.consumoEstrada > pivo){  //enquanto ponteiros forem maiores, retrocede
+			while(compara(cJ.veiculo, pivo) > 0){  //enquanto ponteiros forem maiores, retrocede
 				j--;
 				cJ = cJ.ant;
 			}
@@ -277,7 +283,7 @@ class quickListaDupla{
 
   
         LeitorCsv leitor = new LeitorCsv();
-        Veiculo[] v = leitor.ler("veiculos.csv");
+        Veiculo[] v = leitor.ler("/tmp/veiculos.csv");
 
         ListaDupla lista = new ListaDupla();
 		
@@ -285,13 +291,15 @@ class quickListaDupla{
         int num = sc.nextInt();
         while (num != -1) {
             int pos = BuscaSequencial(v, num);
+            if(pos > -1){
             lista.IF(v[pos]);				//ja insere direto na lista
-            num = sc.nextInt();
 			tamanhoLista++;
+            }
+            num = sc.nextInt();
         }
 
 	//chama quicksort
-		quickSort(lista.primeira, lista.ultima, 0, tamanhoLista - 1);
+		quickSort(lista.primeira.prox, lista.ultima, 0, tamanhoLista - 1);
 
     	//printa o restante da lista 
         lista.mostraLista();

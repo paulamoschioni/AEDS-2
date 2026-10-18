@@ -27,40 +27,32 @@ class heapSort{
 		if(a.co2 != b.co2){								//1o criterio: co2
 			return Double.compare(a.co2, b.co2);
 		}
-		int t = a.getTransmissao().compareTo(b.getTransmissao());	//desempate: transmissao
-		if(t != 0){
-			return t;
-		}
-		return Integer.compare(a.getId(), b.getId());	//3o criterio: id
+		return a.getTransmissao().compareTo(b.getTransmissao());	//desempate: transmissao
 	}
 
-	public static void construir(int tamHeap, Veiculo array[]){
-		int i = tamHeap;
-		while(i > 1 && compara(array[i], array[i/2]) > 0){  //NAO é a raiz E é maior que o pai
-			swap(i, (i/2), array);
-			i = i/2; //proximo pai
+	//heap comeca na posicao 0
+	public static void construir(int ultimo, Veiculo array[]){
+		int i = ultimo;
+		while(i > 0 && compara(array[i], array[(i-1)/2]) > 0){  //NAO é a raiz E é maior que o pai
+			swap(i, (i-1)/2, array);
+			i = (i-1)/2; //proximo pai
 		}
 	}
 
-	public static int getMaiorFilho(int i, int tamHeap, Veiculo array[]){ //pega o maior filho para utilizar no reconstrui e trocar o MAIOR filho
-		int posicaoFilhoMaior;
+	public static int getMaiorFilho(int i, int tamHeap, Veiculo array[]){ 
+		int posicaoFilhoMaior = 2*i + 1;	//comeca pelo da esquerda
 
-		if(2*i + 1 > tamHeap){		//filho da direita NAO existe no heap -> so sobra o da esquerda
-			posicaoFilhoMaior = 2*i;
-		} else {
-			if(compara(array[2*i], array[2*i + 1]) > 0){
-				posicaoFilhoMaior = 2*i;
-			} else {
-				posicaoFilhoMaior = 2*i + 1;
-			}
+		//so troca pro da direita se ele existir e for maior
+		if(2*i + 2 < tamHeap && compara(array[2*i + 2], array[2*i + 1]) > 0){
+			posicaoFilhoMaior = 2*i + 2;
 		}
 
 		return posicaoFilhoMaior;
 	}
 
 	public static void reconstroi(int tamHeap, Veiculo array[]){
-		int i = 1;   //comeca da raiz, onde esta o possivel "intruso"
-		while(i <= tamHeap / 2){	//enquanto i tiver pelo menos 1 filho
+		int i = 0;   //comeca da raiz, onde esta o possivel "intruso"
+		while(2*i + 1 < tamHeap){	//enquanto i tiver pelo menos 1 filho
 			int filho = getMaiorFilho(i, tamHeap, array);   //pega o maior filho 
 			if(compara(array[filho], array[i]) > 0){	//arvore esta invertida?
 				swap(i, filho,array);				//se sim, pai desce e filho sobe
@@ -73,17 +65,14 @@ class heapSort{
 
 	public static void heapSort(int n, Veiculo v[]){
 		//construir heap:
-		for(int i = 2; i <= n; i++){	//comeca do dois e vai ate o ultimo
+		for(int i = 1; i < n; i++){	//comeca do segundo (posicao 1) e vai ate o ultimo
 			construir(i, v); //aqui verifica se tem que trocar
 		}
 
-		//ordenar heap: trocar raiz com ultimo
-		while(n > 1){
-			swap(1 , n , v);	//trocar primeiro com ultimo
-			n--;
-			reconstroi(n, v);
+		for(int tam = n - 1; tam > 0; tam--){
+			swap(0, tam, v);	//trocar primeiro com ultimo
+			reconstroi(tam, v);	
 		}
-
 	}
 
 	public static class LeitorCsv{		//le arquivo csv
@@ -260,8 +249,8 @@ class heapSort{
 	LeitorCsv leitor = new LeitorCsv();
 	Veiculo[] v = leitor.ler("/tmp/veiculos.csv");
 
-	//guarda os VEICULOS encontrados, nas posicoes 1 ate i (a posicao 0 fica vazia por causa do heap)
-	Veiculo[] resultado = new Veiculo[501];
+	//guarda os VEICULOS encontrados, nas posicoes 0 ate i-1
+	Veiculo[] resultado = new Veiculo[500];
 	int i = 0;	//quantos veiculos ja foram guardados
 
 	//Ler ids para buscar em Veiculo[]
@@ -273,14 +262,14 @@ class heapSort{
 		pos = BuscaSequencial(v,num);
 		
 		if(pos > -1){
-		i++;				
 		resultado[i] = v[pos];
+		i++;
 		}	
 		num = sc.nextInt();
 	}
 
-	heapSort(i, resultado);	//ordena as posicoes 1 ate i por co2
-	for(int k = 1; k <= i; k++){	//imprime a partir da posicao 1
+	heapSort(i, resultado);	//ordena as posicoes 0 ate i-1 por co2
+	for(int k = 0; k < i; k++){
 		System.out.println(resultado[k].format());
 	}
 
