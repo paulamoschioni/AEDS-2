@@ -2,7 +2,7 @@ import java.util.Scanner;
 /*Paula Moschioni 
 19/10/2026
 Material de estudos de matrizes. Os metodos contidos sobre matriz são: construtor, mostrar, mostrar diagonal principal, mostrar diagonal secundária, imprimir matriz inversa, 
-get na posicao (i,j), 
+get na posicao (i,j), imprimir em formato de cobrinha, imprimir matriz transposta, 
 */
 class Celula{
     Celula dir, esq, sup, inf;
@@ -145,6 +145,50 @@ class Matriz{
         }
         System.out.println();
     }
+
+    public void cobrinha(){
+        Celula atual = inicio;
+
+        for(int i = 0; i < linha; i++){
+            if(i % 2 == 0){
+                while(atual.dir != null){
+                    System.out.print(atual.elemento + " ");
+                    atual = atual.dir;
+                }
+                System.out.print(atual.elemento + " "); //imprimir o ultimo elemento
+            } else {
+                while(atual.esq != null){
+                    System.out.print(atual.elemento + " ");
+                    atual = atual.esq;
+                }
+                System.out.print(atual.elemento + " "); //imprimir o ultimo elemento
+            }
+
+            //atualiza para a prox linha
+            if(atual != null){
+                atual = atual.inf;
+            }
+        }   
+    }
+
+    public void imprimirMatrizTransposta(){
+        Celula atual;
+        Celula proxInicio = inicio;
+        for(int i = 0; i < coluna; i++){
+            atual = proxInicio;
+            
+            while(atual != null){
+                System.out.print(atual.elemento + " ");
+                atual = atual.inf;
+            }
+            
+            proxInicio = proxInicio.dir;
+        }
+    }
+
+
+
+
 
 
     }
