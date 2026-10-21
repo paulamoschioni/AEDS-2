@@ -51,7 +51,6 @@ int main(){
             m = participantes[i].m;
             s = participantes[i].s;
             participantes[i].tempo = h*3600 + m*60 + s;
-            printf("%s %d\n",participantes[i].nome,participantes[i].tempo);
         }
 
         //enviar ao metodo ordenacao os k primeiros e dps imprimir os k primeiros

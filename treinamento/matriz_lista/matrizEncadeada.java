@@ -1,3 +1,4 @@
+package matriz_lista;
 import java.util.Scanner;
 /*Paula Moschioni 
 19/10/2026
@@ -185,11 +186,6 @@ class Matriz{
             proxInicio = proxInicio.dir;
         }
     }
-
-
-
-
-
 
     }
 
