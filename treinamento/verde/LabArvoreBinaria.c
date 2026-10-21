@@ -21,7 +21,7 @@ class ArvoreBinaria{
         }
 
         public ArvoreBinaria(int x){
-            No no = new No();
+            No no = new No(x);
             raiz = no;
         }
 
@@ -38,7 +38,7 @@ class ArvoreBinaria{
             if(x < i.elemento){
                 i.esq = inserir(x, i.esq);
             }
-            else if(x < i.elemento){
+            else if(x > i.elemento){
                 i.dir = inserir(x, i.dir);
             }
 
@@ -55,12 +55,15 @@ class ArvoreBinaria{
                 return false;
             }
             if(i.elemento == x){
+                System.out.print(i.elemento + " ");
                 return true;
             }
             else if(x > i.elemento){
+                System.out.print(i.elemento + " ");
                 return pesquisar(x, i.dir);
             }
             else{
+                System.out.print(i.elemento + " ");
                 return pesquisar(x, i.esq);
             }
 
@@ -68,13 +71,22 @@ class ArvoreBinaria{
 
 
         //CAMINHARES
+        private boolean primeiro; // controla o espaco entre elementos (sem espaco sobrando no fim)
+
+        private void imprimir(int x){
+            if(!primeiro) System.out.print(" ");
+            System.out.print(x);
+            primeiro = false;
+        }
+
         public void caminharPre(){
+            primeiro = true;
             caminharPre(raiz);
         }
 
         public void caminharPre(No i){
             if(i != null){
-            System.out.print(i.elemento + " ");
+            imprimir(i.elemento);
             caminharPre(i.esq);
             caminharPre(i.dir);
             }
@@ -82,6 +94,7 @@ class ArvoreBinaria{
 
 
         public void caminharPos(){
+            primeiro = true;
             caminharPos(raiz);
         }
 
@@ -89,19 +102,20 @@ class ArvoreBinaria{
             if(i != null){
                 caminharPos(i.esq);
                 caminharPos(i.dir);
-                System.out.print(i.elemento + " ");
+                imprimir(i.elemento);
             }
         }
 
 
         public void caminharEm(){
+            primeiro = true;
             caminharEm(raiz);
         }
 
         public void caminharEm(No i){
             if(i != null){
                 caminharEm(i.esq);
-                System.out.print(i.elemento + " ");
+                imprimir(i.elemento);
                 caminharEm(i.dir);
             }
         }
@@ -125,23 +139,26 @@ class LabArvoreBinaria {
             } 
             else if(comando.equals("POS")) {
                 if(arvore.raiz == null)     System.out.println("V");
-                else  arvore.caminharPos();
-
-                System.out.println();
+                else{
+                    arvore.caminharPos();
+                    System.out.println();
+                }
 
             }
              else if(comando.equals("PRE")) {
                 if(arvore.raiz == null)     System.out.println("V");
-                else arvore.caminharPre();
-
-                System.out.println();
+                else{
+                    arvore.caminharPre();
+                    System.out.println();
+                }
 
             }
              else if(comando.equals("EM")) {
                 if(arvore.raiz == null)     System.out.println("V");
-                else arvore.caminharEm();
-
-                System.out.println();
+                else{
+                    arvore.caminharEm();
+                    System.out.println();
+                }
 
             }
              else {
