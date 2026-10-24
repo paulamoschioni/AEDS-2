@@ -21,4 +21,27 @@ class abb{
         }
         return alvo;
     }
+
+    /* 10- MENOR ANCESTRAL COMUM DE A E B */
+    // PORTEIRO: quem usa a árvore chama este método (mesmo kit de sempre)
+    public int menorAncestral(int a, int b) {
+        return menorAncestral(a, b, raiz);       // começa a descida pela raiz
+    }
+    private int menorAncestral(int a, int b, No i) {
+
+        // Situação 1: os DOIS são menores que o nó atual
+        if (a < i.elemento && b < i.elemento) {
+            return menorAncestral(a, b, i.esq);   
+        }
+
+     // Situação 2: os DOIS são maiores que o nó atual
+        if (a > i.elemento && b > i.elemento) {   
+            return menorAncestral(a, b, i.dir);   
+        }
+
+        // Situação 3: eles se separaram (ou um deles É este nó)
+        return i.elemento;                             
+    }
+
 }
+
