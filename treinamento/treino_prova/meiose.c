@@ -1,5 +1,8 @@
 
-/*Complexidade = O(n)*/
+/*Complexidade = O(n)
+Paula Moschioni 
+25/10/2026 
+*/
 typedef struct Celula {
 int elemento;
 struct Celula* prox;
