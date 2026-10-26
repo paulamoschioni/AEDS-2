@@ -101,7 +101,7 @@ class Arvore {
             tem = true;
         }
 
-        return tem;        
+        return tem || dEsq || dDir;        
     }
 
     /*05-NÚMERO DE NÓS FOLHAS */

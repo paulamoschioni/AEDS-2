@@ -12,7 +12,6 @@ class abb{
         int esq = kMenor(k, i.esq);
 
         //pega o k menor
-        int q = 0;
         int alvo = 0;
         if(k == 1){
             alvo = i.elemento;
@@ -30,7 +29,7 @@ class abb{
     private int menorAncestral(int a, int b, No i) {
 
         // Situação 1: os DOIS são menores que o nó atual
-        if (a < i.elemento && b < i.elemento) {
+        if(a < i.elemento && b < i.elemento) {
             return menorAncestral(a, b, i.esq);   
         }
 
