@@ -3,3 +3,7 @@
 *~
 *.class
 *.exe
+
+# entradas e saidas publicas
+pub*.in
+pub*.out
