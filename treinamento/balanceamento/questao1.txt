@@ -1,0 +1,2 @@
+01- O custo fica em O(lg n). Caso a árvore esteja desbalanceada, é possível que ela
+caia no caso de O(n).
