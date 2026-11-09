@@ -1,0 +1,4 @@
+1) pendem para direita -  rotação simples a esquerda
+2) pendem para esquerda - rotação simples a direita
+3) pendem para direita - rotação dupla direita esquerda
+4) pendem para esquerda - rotação dupla esquerda direita
