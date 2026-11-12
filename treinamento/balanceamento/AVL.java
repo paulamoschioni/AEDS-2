@@ -17,16 +17,18 @@ class No {
 
     // devolve a altura de um nó, tratando null como -1
     public static int getNivel(No no) {
-    if (no == null) {          
-        return -1;             
-    } else {
-        return no.nivel;      
+        if(no == null){
+            return -1;
+        }
+        else{
+            return no.nivel;
+        }
     }
-}
     // recalcula a altura 
     public void setNivel() {
-        nivel = 1 + Math.max(getNivel(esq), getNivel(dir));
+        nivel = 1 + Math.max(getNivel(dir), getNivel(esq));
     }
+
     // fator = altura(dir) - altura(esq)
     public static int getFator(No no) { 
         return getNivel(no.dir) - getNivel(no.esq);
@@ -42,25 +44,53 @@ public class AVL {
 
     // ===================== AUXILIARES =====================
     private No balancear(No no) {
-       
-    
+       int fator = No.getFator(no);
+
+       if(fator == 2){
+            if(No.getFator(no.dir) == -1){
+                no.dir = rotacaoDireita(no.dir);
+            }
+        return rotacaoEsquerda(no);
+       }
+        else if(fator == -2){
+            if(No.getFator(no.esq) == 1){
+                no.esq = rotacaoEsquerda(no.esq);
+            }
+            return rotacaoDireita(no);
+        }  else {
+            no.setNivel();      //nao faz nada so atualiza o nivel
+        }
     }
 
     // ===================== ROTAÇÕES =====================
 
     private No rotacaoDireita(No no) {
-        // TODO: caso LL
+        No noEsq = no.esq;
+        No noEsqDir = noEsq.dir;
+
+        noEsq.dir = no;
+        no.esq = noEsqDir;
+
+        no.setNivel();
+        noEsq.setNivel();
         return no;
     }
 
     private No rotacaoEsquerda(No no) {
-        // TODO: caso RR
+        No noDir = no.dir;
+        No noDirEsq = noDir.esq;
+
+        noDir.esq = no;
+        no.esq = noDirEsq;
+
+        noDir.setNivel();
+        no.setNivel();
         return no;
     }
 
     private No rotacaoDuplaEsqDir(No no) {
-        // TODO: caso LR -> no.esq = rotacaoEsquerda(no.esq); return rotacaoDireita(no);
-        return no;
+        no.esq = rotacaoEsquerda(no.esq);
+        return rotacaoDireita(no);
     }
 
     private No rotacaoDuplaDirEsq(No no) {
