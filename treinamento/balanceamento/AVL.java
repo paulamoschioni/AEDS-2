@@ -71,8 +71,8 @@ public class AVL {
         noEsq.dir = no;
         no.esq = noEsqDir;
 
-        no.setNivel();
         noEsq.setNivel();
+        no.setNivel();
         return no;
     }
 
