@@ -7,3 +7,12 @@
 # entradas e saidas publicas
 pub*.in
 pub*.out
+
+# executaveis compilados sem extensao (gcc -o)
+trabalho pratico 2/Counting
+trabalho pratico 2/FilaCircular
+trabalho pratico 2/ListaEncadeada
+trabalho pratico 2/Modelagem
+trabalho pratico 2/Radix
+trabalho pratico 2/SelectionSort
+treinamento/BuscaBinaria
