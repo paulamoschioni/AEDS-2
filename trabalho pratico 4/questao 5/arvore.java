@@ -260,19 +260,20 @@ class arvore{
 	ArvoreBinaria arvore = new ArvoreBinaria();
 
 	//primeira parte: ids ate -1, inseridos na arvore
-	int num = Integer.parseInt(sc.nextLine().trim());
+	int num = sc.nextInt();		//le o primeiro id
 	while(num != -1){
 		int pos = BuscaSequencial(v, num);
 		if(pos > -1){
 		arvore.inserir(v[pos]);
 		}
-		num = Integer.parseInt(sc.nextLine().trim());
+		num = sc.nextInt();	//le o proximo id
 	}
+	sc.nextLine();	//descarta o "enter" que sobrou depois do -1
 
-	String modelo = sc.nextLine().trim();
+	String modelo = sc.nextLine();	//modelo pode ter espaco, entao le a linha toda
 	while(!modelo.equals("FIM")){
 		arvore.pesquisar(modelo);
-		modelo = sc.nextLine().trim();
+		modelo = sc.nextLine();
 	}
 
 	//registros da arvore em ordem

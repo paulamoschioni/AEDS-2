@@ -48,7 +48,7 @@ class Arvore{
             System.out.println("erro");
         }
 
-        return i;
+        return balancear(i);                 // AVL: na volta da recursão, atualiza altura e rebalanceia
     }
 
 

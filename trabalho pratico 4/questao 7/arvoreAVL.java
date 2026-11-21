@@ -190,7 +190,7 @@ class arvoreAVL{
 		veiculo = v;
 		esq = null;
 		dir = null;
-        nivel = 0;
+        nivel = 1;	
 	}
 
     private static int getNivel(No i){
@@ -202,11 +202,16 @@ class arvoreAVL{
         }
     }
     
-    private int calculaFator(){
-        
+    private static int calculaFator(No i){	//fator = altura dir - altura esq
+        return getNivel(i.dir) - getNivel(i.esq);
     }
 
-	}
+	private static void setNivel(No i){
+    i.nivel = 1 + Math.max(getNivel(i.dir), getNivel(i.esq));  
+}
+
+
+}
 
 	public static class ArvoreAVL{
 	No raiz;
@@ -228,7 +233,55 @@ class arvoreAVL{
 			i.dir = inserir(v, i.dir);
 		}
 		//se for igual nao insere
+		return balancear(i);
+	}
+
+	private No balancear(No i){
+		if(i == null){
+			return null;
+		}
+
+		No.setNivel(i);
+		int Fb = No.calculaFator(i);
+
+		if(Fb == 2){			//pendeu pra direita
+			if(No.calculaFator(i.dir) == -1){	//filho dir pende pra esq: rotacao dupla
+				i.dir = rotacaoDir(i.dir);
+			}
+			return rotacaoEsq(i);
+		}
+		else if(Fb == -2){		//pendeu pra esquerda
+			if(No.calculaFator(i.esq) == 1){	//filho esq pende pra dir: rotacao dupla
+				i.esq = rotacaoEsq(i.esq);
+			}
+			return rotacaoDir(i);
+		}
+
 		return i;
+	}
+
+	private No rotacaoEsq(No no){
+		No noDir = no.dir;
+		No noDirEsq = no.dir.esq;
+
+		noDir.esq = no;
+		no.dir = noDirEsq;
+
+		No.setNivel(no);	//primeiro o que desceu, depois o que subiu
+		No.setNivel(noDir);
+		return noDir;
+	}
+	
+	private No rotacaoDir(No no){
+		No noEsq = no.esq;
+		No noEsqDir = no.esq.dir;
+
+		noEsq.dir = no;
+		no.esq = noEsqDir;
+
+		No.setNivel(no);	//primeiro o que desceu, depois o que subiu
+		No.setNivel(noEsq);
+		return noEsq;
 	}
 
 	public void pesquisar(String modelo){	//mostra o caminho e SIM/NAO
@@ -275,20 +328,20 @@ class arvoreAVL{
 
 	ArvoreAVL arvore = new ArvoreAVL();
 
-	//primeira parte: ids ate -1, inseridos na arvore
-	int num = Integer.parseInt(sc.nextLine().trim());
+	int num = sc.nextInt();		//le o primeiro id
 	while(num != -1){
 		int pos = BuscaSequencial(v, num);
 		if(pos > -1){
 		arvore.inserir(v[pos]);
 		}
-		num = Integer.parseInt(sc.nextLine().trim());
+		num = sc.nextInt();	//le o proximo id
 	}
+	sc.nextLine();	
 
-	String modelo = sc.nextLine().trim();
+	String modelo = sc.nextLine();	//modelo pode ter espaco, entao le a linha toda
 	while(!modelo.equals("FIM")){
 		arvore.pesquisar(modelo);
-		modelo = sc.nextLine().trim();
+		modelo = sc.nextLine();
 	}
 
 	//registros da arvore em ordem
