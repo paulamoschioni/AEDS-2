@@ -182,28 +182,113 @@ void inicializaArvore(Arvore *arvore){
 	arvore->raiz = NULL;
 }
 
-No* inserirRec(Veiculo veic, No* bisavo, No* avo, No* pai, No *i){	//chave de pesquisa: modelo
-	if(i == NULL){
-		i = novoNo(veic);
+void fragmentar(No* i){	//troca de cores: i fica vermelho e os filhos pretos
+	i->cor = 1;
+	i->esq->cor = i->dir->cor = 0;
+}
+
+int eh4no(No* i){	//4-no = dois filhos vermelhos
+	if(i->esq != NULL && i->dir != NULL && i->esq->cor == 1 && i->dir->cor == 1){
+		return 1;
 	}
-    
-    else if(strcmp(veic.modelo, i->v.modelo) < 0){
-		i->esq = inserirRec(veic, i->esq);
-	} else if(strcmp(veic.modelo, i->v.modelo) > 0){
-		i->dir = inserirRec(veic, i->dir);
+	else return 0;
+}
+
+//ROTACOES
+No* rotacaoDir(No* no){
+	No* noEsq = no->esq;
+	no->esq = noEsq->dir;
+	noEsq->dir = no;
+	return noEsq;
+}
+
+No* rotacaoEsq(No* no){
+	No* noDir = no->dir;
+	no->dir = noDir->esq;
+	noDir->esq = no;
+	return noDir;
+}
+
+No* rotacaoDirEsq(No* no){
+	no->dir = rotacaoDir(no->dir);
+	return rotacaoEsq(no);
+}
+
+No* rotacaoEsqDir(No* no){
+	no->esq = rotacaoEsq(no->esq);
+	return rotacaoDir(no);
+}
+
+//chamado quando pai e i sao vermelhos (dois vermelhos seguidos). Compara pelo MODELO
+void balancear(Arvore *arvore, No* bisavo, No* avo, No* pai, No* i){
+	if(strcmp(pai->v.modelo, avo->v.modelo) > 0){		//pai esta a direita do avo
+		if(strcmp(i->v.modelo, pai->v.modelo) > 0){	//i a direita do pai: reta
+			avo = rotacaoEsq(avo);
+		}
+		else {										//i a esquerda do pai: joelho
+			avo = rotacaoDirEsq(avo);
+		}
 	}
-	//se for igual nao insere
-	return i;
+	else {											//pai esta a esquerda do avo
+		if(strcmp(i->v.modelo, pai->v.modelo) < 0){	//reta
+			avo = rotacaoDir(avo);
+		}
+		else {										//joelho
+			avo = rotacaoEsqDir(avo);
+		}
+	}
+
+	//religa a subarvore rotacionada no bisavo (ou na raiz)
+	if(bisavo == NULL){
+		arvore->raiz = avo;
+	} else if(strcmp(avo->v.modelo, bisavo->v.modelo) < 0){
+		bisavo->esq = avo;
+	} else {
+		bisavo->dir = avo;
+	}
+
+	//recolore: novo topo preto, filhos vermelhos
+	avo->cor = 0;
+	avo->esq->cor = 1;
+	avo->dir->cor = 1;
+}
+
+void inserirRec(Arvore *arvore, Veiculo veic, No* bisavo, No* avo, No* pai, No *i){	//chave de pesquisa: modelo
+	if(i == NULL){		//achou folha: cria o no vermelho como filho do pai
+		if(strcmp(veic.modelo, pai->v.modelo) > 0){
+			i = pai->dir = novoNo(veic, 1);
+		}
+		else {
+			i = pai->esq = novoNo(veic, 1);
+		}
+		if(pai->cor == 1){		//pai vermelho tambem: balanceia
+			balancear(arvore, bisavo, avo, pai, i);
+		}
+	}
+	else{	//continua procurando
+		if(eh4no(i) == 1){
+			fragmentar(i);		//so troca de cores
+			if(arvore->raiz == i) i->cor = 0;	//manter a raiz preta
+			else if(pai->cor == 1) balancear(arvore, bisavo, avo, pai, i);
+		}
+
+		if(strcmp(veic.modelo, i->v.modelo) < 0){
+			inserirRec(arvore, veic, avo, pai, i, i->esq);
+		} else if(strcmp(veic.modelo, i->v.modelo) > 0){
+			inserirRec(arvore, veic, avo, pai, i, i->dir);
+		}
+		//se for igual nao insere
+	}
 }
 
 void inserir(Arvore *arvore, Veiculo veic){
 	if(arvore->raiz == NULL){
-        arvore->raiz = novoNo(arvore->raiz, 0);
-    }
-    else{
-        inserirRec(veic, NULL, NULL, NULL, arvore->raiz);
-    }
-    arvore->raiz->cor = 0;
+		arvore->raiz = novoNo(veic, 0);
+	}
+	else{
+		inserirRec(arvore, veic, NULL, NULL, NULL, arvore->raiz);
+	}
+	arvore->raiz->cor = 0;
 }
 
 int pesquisarRec(char *modelo, No *i){	//vai printando o caminho ate achar ou chegar em null
