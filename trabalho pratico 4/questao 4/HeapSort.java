@@ -1,9 +1,7 @@
 import java.util.Scanner;
 import java.io.File;                   
-
-
-class QuickParcial{
-	public static int BuscaSequencial(Veiculo v[], int ident){
+class HeapSort{
+	public static int BuscaSequencial(Veiculo v[], int ident){ //busca por id no array de veiculos
 	int pos = -1;
 	int tam = v.length;
 	
@@ -136,6 +134,9 @@ class QuickParcial{
 	public Data getDataregistro(){
 	return dataRegistro;
 	}
+	public String getModelo(){
+	return modelo;
+	}
 
 	public static Veiculo parseVeiculo(String s){	//cria um novo veiculo com 15 atributos e retorna ele				
 	String[] x = s.split(",");		//cria vetor de 15 strings p guardar os 15 atributos. Split retorna automaticamente string[]
@@ -168,7 +169,7 @@ class QuickParcial{
 					comb += ",";
 				comb += combustivel[i];
 			}
-	return "[" + getId() + " ## " + getMarca() + " ## " + modelo + " ## " + getAno() + " ## "
+	return "[" + getId() + " ## " + getMarca() + " ## " + getModelo() + " ## " + getAno() + " ## "
 	+ getCategoria() + " ## [" + comb + "] ## " + getCilindros() + " ## " + getCilindrada()
 	+ " ## " + getTransmissao() + " ## " + getTracao() + " ## "
 	+ String.format("%.2f", getConsumoCidade()) + " ## "
@@ -177,140 +178,111 @@ class QuickParcial{
 		}
 	  }
 
-	public static class Celula{
-	Celula prox;
-	Celula ant;
-	Veiculo veiculo;
-
-	public Celula(){	//constrtor sem parametros para inicializar os ponteiros null
-		prox = null;
-		ant = null;
-		veiculo = null;
-	}
 	
-	public Celula(Veiculo v){	//constrtor sem parametros para inicializar o veiculo
-		veiculo = v;
-		prox = null;
-		ant = null;
+	public static void swap(int a, int b, Veiculo v[]){
+		Veiculo temp = v[a];
+		v[a] = v[b];
+		v[b] = temp;
 	}
 
-	} 
-
-
-	public static class ListaDupla{
-	Celula primeira;
-	Celula ultima;
-
-	public ListaDupla(){
-        	primeira = new Celula();	//celula cabeca (sem veiculo)
-		ultima = primeira;
-   	}
-
-   	public void IF(Veiculo v){
-		Celula nova = new Celula(v);  
-		//ajusta ponteiros da nova celula
-		nova.ant = ultima;
-
-		//ajusta ponteiros da ultima celula
-		ultima.prox = nova;
-
-		//ajusta ultima
-		ultima = nova;	
-	}	
-
-	public void mostraLista(){
-		Celula atual = primeira.prox;
-        int k = 0;
-		while(k < 10){
-		System.out.println(atual.veiculo.format());
-		
-		atual = atual.prox;
-        k++;
+	// retorna > 0 se a vem DEPOIS de b, < 0 se vem ANTES, 0 se iguais
+	public static int compara(Veiculo a, Veiculo b){
+		if(a.co2 != b.co2){								//1o criterio: co2
+			return Double.compare(a.co2, b.co2);
 		}
-	}	
+		return a.getTransmissao().compareTo(b.getTransmissao());	//desempate: transmissao
+	}
+
+	//heap comeca na posicao 0
+	public static void construir(int ultimo, Veiculo array[]){
+		int i = ultimo;
+		while(i > 0 && compara(array[i], array[(i-1)/2]) > 0){  //NAO e a raiz E e maior que o pai
+			swap(i, (i-1)/2, array);
+			i = (i-1)/2; //proximo pai
+		}
+	}
+
+	public static int getMaiorFilho(int i, int tamHeap, Veiculo array[]){
+		int posicaoFilhoMaior = 2*i + 1;	//comeca pelo da esquerda
+
+		//so troca pro da direita se ele existir e for maior
+		if(2*i + 2 < tamHeap && compara(array[2*i + 2], array[2*i + 1]) > 0){
+			posicaoFilhoMaior = 2*i + 2;
+		}
+
+		return posicaoFilhoMaior;
+	}
+
+	public static void reconstroi(int tamHeap, Veiculo array[]){
+		int i = 0;   //comeca da raiz, onde esta o possivel "intruso"
+		while(2*i + 1 < tamHeap){	//enquanto i tiver pelo menos 1 filho
+			int filho = getMaiorFilho(i, tamHeap, array);   //pega o maior filho
+			if(compara(array[filho], array[i]) > 0){	//arvore esta invertida?
+				swap(i, filho, array);				//se sim, pai desce e filho sobe
+				i = filho;
+			} else {
+				i = tamHeap;						//se nao, BREAK
+			}
+		}
+	}
+
+	public static void heapSortParcial(int n, Veiculo v[], int k){	//ordena so os k menores
+		if(k > n) k = n;	//se tiver menos de k elementos, ordena todos
+
+		//construir heap de MAXIMO so com os k primeiros
+		for(int i = 1; i < k; i++){
+			construir(i, v);
+		}
+
+		//para cada um dos que sobraram: se for menor que a raiz (maior dos k), entra no lugar dela
+		for(int i = k; i < n; i++){
+			if(compara(v[i], v[0]) < 0){
+				swap(i, 0, v);
+				reconstroi(k, v);	//arruma o heap de tamanho k
+			}
+		}
+
+		//ordena os k que ficaram no heap (igual ao heapsort normal)
+		for(int tam = k - 1; tam > 0; tam--){
+			swap(0, tam, v);	//trocar primeiro com ultimo
+			reconstroi(tam, v);
+		}
+	}
+
+
+
+	public static void main(String[] args) throws Exception{
+	Scanner sc = new Scanner(System.in);
+	//ler CSV
+	LeitorCsv leitor = new LeitorCsv();
+	Veiculo[] v = leitor.ler("/tmp/veiculos.csv"); //volta a ref de v
+
+	//vetor separado so com os veiculos pedidos na entrada
+	Veiculo[] selecionados = new Veiculo[500];
+	int n = 0;		//quantos foram guardados
+
+	int num = sc.nextInt();
+	int resultado;
+
+	while(num != -1){	//le conjunto de ids para buscar
+		resultado = BuscaSequencial(v,num);
+
+		if(resultado > -1){
+		selecionados[n] = v[resultado];	//guarda a ref do veiculo encontrado
+		n++;
+		}
+		num = sc.nextInt();
+	}
+
+	//ordena so as n posicoes preenchidas
+	int k = 10;
+	heapSortParcial(n, selecionados, k);
+
+	//mostra so os k primeiros (os unicos garantidos ordenados)
+	for(int i = 0; i < n && i < k; i++){
+		System.out.println(selecionados[i].format());
+	}
+
+	sc.close();
+	}
 }
-	static void swap(Celula a, Celula b){
-		Veiculo temp = a.veiculo;
-		a.veiculo = b.veiculo;
-		b.veiculo = temp;
-	}
-
-	static int compara(Veiculo a, Veiculo b){
-		if(a.consumoEstrada < b.consumoEstrada) return -1;	//1o criterio: consumoEstrada
-		if(a.consumoEstrada > b.consumoEstrada) return 1;
-		return a.marca.compareTo(b.marca);	//empate -> marca
-	}
-
-	static void quickSort(Celula esq, Celula dir, int Nesq, int Ndir, int k){
-		Celula cI = esq, cJ = dir;
-		int i = Nesq, j = Ndir;
-		
-		//achar nó do pivo do meio
-		Celula meio = esq;
-		for(int p = Nesq; p < ((Nesq+Ndir)/2); p++){
-			meio = meio.prox;
-		}
-		Veiculo pivo = meio.veiculo;  
-
-		while(i <= j){	//enquanto ponteiros nao se cruzaram ainda
-			while(compara(cI.veiculo, pivo) < 0){	//avanca i para frente
-				i++;
-				cI = cI.prox;
-			}
-			while(compara(cJ.veiculo, pivo) > 0){  //enquanto ponteiros forem maiores, retrocede
-				j--;
-				cJ = cJ.ant;
-			}
-
-			if(i <= j){  //enquanto nao se cruzaram, 
-				swap(cI,cJ);
-				cI = cI.prox;
-				i++;
-				cJ =cJ.ant;
-				j--;
-			}
-		}
-			//chamadas recursivas
-			if(Nesq < j){
-				quickSort(esq,cJ,Nesq,j,k);
-			}
-			if(i < k && Ndir > i){
-				quickSort(cI, dir,i,Ndir,k);
-			}
-	}
-
-
-	public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(System.in);
-
-  
-        LeitorCsv leitor = new LeitorCsv();
-        Veiculo[] v = leitor.ler("/tmp/veiculos.csv");
-
-        ListaDupla lista = new ListaDupla();
-		
-		int tamanhoLista = 0;
-        int num = sc.nextInt();
-        while (num != -1) {
-            int pos = BuscaSequencial(v, num);
-            if(pos > -1){
-            lista.IF(v[pos]);				//ja insere direto na lista
-			tamanhoLista++;
-            }
-            num = sc.nextInt();
-        }
-
-	//chama quicksort
-		quickSort(lista.primeira.prox, lista.ultima, 0, tamanhoLista - 1, 10);
-
-    	//printa o restante da lista 
-        lista.mostraLista();
-        sc.close();
-    }
-}
-	
-
-
-
-
-
